@@ -1,0 +1,86 @@
+{{- $fullName := include "auth-api.fullname" . -}}
+{{-  $secretName := printf "%s-%s" $fullName "configs" -}}
+{{- $containerPort := .Values.configuration.api.http.port -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auth-api.fullname" . }}
+  labels:
+    {{- include "auth-api.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "auth-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "auth-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: {{ $secretName }}
+          items:
+            - key: default.json
+              path: default.json
+            - key: aws.json
+              path: aws.json
+            - key: firebase.json
+              path: firebase.json
+      serviceAccountName: {{ include "auth-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /app/config/default.json
+              name: {{ $secretName }}
+              subPath: default.json
+              readOnly: true
+            - mountPath: /app/credentials/aws.json
+              name: {{ $secretName }}
+              subPath: aws.json
+              readOnly: true
+            - mountPath: /app/credentials/firebase.json
+              name: {{ $secretName }}
+              readOnly: true
+              subPath: firebase.json
+          ports:
+            - name: http
+              containerPort: {{ $containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
