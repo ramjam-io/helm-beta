@@ -1,0 +1,21 @@
+# comment
+
+# Match any file or path named .git
+.git
+
+# Match only directories named mydir
+tmp/
+
+# Match any file named ab.txt, ac.txt, or ad.txt
+*/production.values.yaml
+*/dev.values.yaml
+*/staging.values.yaml
+*/testing.values.yaml
+*/prod.values.yaml
+*/dev.values.yaml
+
+# Match any file under subdir matching temp*
+*/temp*
+
+*/*/temp*
+temp?

@@ -977,3 +977,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/goland,phpstorm,pycharm,webstorm,visualstudiocode,macos,windows,linux,python,helm,node,nuxtjs,vue,vuejs,reactnative,react
+/tmp
