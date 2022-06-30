@@ -3,6 +3,16 @@ entries:
   auth-api:
   - apiVersion: v2
     appVersion: 0.0.42
+    created: "2022-06-30T13:19:11.957062003Z"
+    description: RamJam Authentication API
+    digest: a012d3098c2b4d865308fbe577b4d70ea7b6fdc2dd675563c5292914e89d7e81
+    name: auth-api
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/auth-api-0.0.6/auth-api-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 0.0.42
     created: "2022-06-30T13:04:14.205888912Z"
     description: RamJam Authentication API
     digest: 7b8f1a26aae614cdfaa73b66d3dfccc4fdcad41ee21a890398f2d32db0727ddc
