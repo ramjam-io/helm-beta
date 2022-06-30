@@ -28,14 +28,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: {{ $secretName }}
-          items:
-            - key: default.json
-              path: default.json
-            - key: aws.json
-              path: aws.json
-            - key: firebase.json
-              path: firebase.json
+        - name: secrets
+          secret:
+            secretName: {{ $secretName }}
+            items:
+              - key: default.json
+                path: default.json
+              - key: aws.json
+                path: aws.json
+              - key: firebase.json
+                path: firebase.json
       serviceAccountName: {{ include "auth-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -47,15 +49,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - mountPath: /app/config/default.json
-              name: {{ $secretName }}
+              name: secrets
               subPath: default.json
               readOnly: true
             - mountPath: /app/credentials/aws.json
-              name: {{ $secretName }}
+              name: secrets
               subPath: aws.json
               readOnly: true
             - mountPath: /app/credentials/firebase.json
-              name: {{ $secretName }}
+              name: secrets
               readOnly: true
               subPath: firebase.json
           ports:
