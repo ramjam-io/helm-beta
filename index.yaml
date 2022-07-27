@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  access-manager-api:
+  - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2022-07-27T15:38:36.187604339Z"
+    description: Ram Jam Access Manager API
+    digest: b627cd4141e00618a632fcaa9743ab42a52c33e9b5398074f80a890b61849b63
+    name: access-manager-api
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/access-manager-api-1.0.0/access-manager-api-1.0.0.tgz
+    version: 1.0.0
   auth-api:
   - apiVersion: v2
     appVersion: 0.0.42
