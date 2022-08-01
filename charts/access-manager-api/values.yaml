@@ -1,0 +1,146 @@
+# Default values for access-manager-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ramjam/access-manager-api
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8181
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: my-api.ramjam.io
+      paths:
+        - path: /api
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - my-api.ramjam.io
+      secretName: my-api.ramjam.io-tls
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+command: ["/access-manager-api-linux-amd64"]
+args: ["serve", "-c", "/opt/ramjam.io/etc/config.yaml", "-l", "debug"]
+
+configuration:
+  driver:
+    mongodb:
+      # -- MongoDB connection string
+      uri: ""
+      # -- MongoDB database name
+      database: ""
+  http:
+    # -- HTTP server port
+    port: 8181
+  # -- Stripe configuration
+  stripe:
+    # -- Stripe API key
+    key: ""
+  sendgrid:
+    # -- Enable SendGrid email sending
+    enabled: false
+    # -- SendGrid API key
+    apiKey: ""
+    templates:
+      invitation: ""
+  # -- Seeding enabled
+  seeder:
+    auth:
+      # -- Seeder username
+      - name: ""
+        # -- Seeder authentication users full name
+        identity: ""
+        # -- Seeder authentication identifier
+        password: ""
+        # -- Seeder authentication password
+  hydra:
+    trustCerts: true
+    admin:
+      debug: false
+      uri:
+      scheme:
+      host:
+      username:
+      password:
+    public:
+      uri:
+      scheme:
+      host:
+  products:
+    - name:
+      shortCode:
+      oauthScope:
+      description:
+      icon:
+      img:
+      requireInvite: true
+      requireBilling: true
+      requireVerifiedId: true
+      enabled: true
+      beta: true
+  log:
+    level: debug

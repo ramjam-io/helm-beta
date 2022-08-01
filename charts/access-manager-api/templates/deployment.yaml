@@ -1,19 +1,18 @@
-{{- $fullName := include "auth-api.fullname" . -}}
-{{-  $secretName := printf "%s-%s" $fullName "configs" -}}
-{{- $containerPort := .Values.configuration.api.http.port -}}
+{{- $fullName := include "access-manager-api.fullname" . -}}
+{{-  $secretName := printf "%s-%s" $fullName "config" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "auth-api.fullname" . }}
+  name: {{ include "access-manager-api.fullname" . }}
   labels:
-    {{- include "auth-api.labels" . | nindent 4 }}
+    {{- include "access-manager-api.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "auth-api.selectorLabels" . | nindent 6 }}
+      {{- include "access-manager-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -21,24 +20,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "auth-api.selectorLabels" . | nindent 8 }}
+        {{- include "access-manager-api.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: secrets
+        - name: config
           secret:
             secretName: {{ $secretName }}
             items:
-              - key: default.json
-                path: default.json
-              - key: aws.json
-                path: aws.json
-              - key: firebase.json
-                path: firebase.json
-      serviceAccountName: {{ include "auth-api.serviceAccountName" . }}
+              - key: config.yaml
+                path: config.yaml
+      serviceAccountName: {{ include "access-manager-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -47,22 +42,16 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ toYaml .Values.command | nindent 12 }}
+          args: {{ toYaml .Values.args | nindent 12 }}
           volumeMounts:
-            - mountPath: /app/config/default.json
-              name: secrets
-              subPath: default.json
+            - mountPath: /opt/ramjam.io/etc/config.yaml
+              name: config
               readOnly: true
-            - mountPath: /app/credentials/aws.json
-              name: secrets
-              subPath: aws.json
-              readOnly: true
-            - mountPath: /app/credentials/firebase.json
-              name: secrets
-              readOnly: true
-              subPath: firebase.json
+              subPath: config.yaml
           ports:
             - name: http
-              containerPort: {{ $containerPort }}
+              containerPort: {{ .Values.configuration.http.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -70,7 +59,7 @@ spec:
               port: http
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /health
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

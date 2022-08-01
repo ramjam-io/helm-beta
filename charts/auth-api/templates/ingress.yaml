@@ -1,9 +1,18 @@
+
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "auth-api.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{-  $tlsSecretName := printf "%s-%s" $fullName "tls" -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+
+
+{{- $useV1 := .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
+
+{{- if $useV1 }}
+apiVersion: networking.k8s.io/v1
+{{ else }}
 apiVersion: networking.k8s.io/v1beta1
+{{ end }}
 {{- else -}}
 apiVersion: extensions/v1beta1
 {{- end }}
@@ -17,6 +26,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  ingressClassName: {{ .Values.ingress.className }}
   {{- if .Values.ingress.tls }}
   tls:
     {{- range .Values.ingress.tls }}
@@ -24,7 +34,7 @@ spec:
         {{- range .hosts }}
         - {{ . | quote }}
         {{- end }}
-      secretName: {{ $tlsSecretName }}
+      secretName:  {{ .secretName }}
     {{- end }}
   {{- end }}
   rules:
@@ -33,10 +43,14 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .path | quote }}
+            pathType: {{ .pathType }}
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              service:
+                name: {{ $fullName }}
+                # port: {{ $svcPort | quote }}
+                port: 
+                  name: http
           {{- end }}
     {{- end }}
   {{- end }}
