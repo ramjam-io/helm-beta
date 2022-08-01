@@ -85,6 +85,16 @@ entries:
   cdi:
   - apiVersion: v2
     appVersion: 0.3.21
+    created: "2022-08-01T11:03:00.517857909Z"
+    description: CoAP Data Ingestor
+    digest: 5ee82f358ba459bbd2f76f3f08261503504d963c76b6fd53ca1012762511745d
+    name: cdi
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/cdi-0.1.1/cdi-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.3.21
     created: "2022-08-01T10:53:40.925126094Z"
     description: CoAP Data Ingestor
     digest: cd522cfb394f5d535b32f9c3493336b12155ccda83d9625610525882c103073f
