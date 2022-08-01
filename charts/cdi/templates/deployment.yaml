@@ -61,7 +61,7 @@ spec:
               name: api-config
               readOnly: true
               subPath: root_ca_cert.pem
-            - mouthPath: /opt/ramjam.io/etc/root_ca_key.pem
+            - mountPath: /opt/ramjam.io/etc/root_ca_key.pem
               name: api-config
               readOnly: true
               subPath: root_ca_key.pem
