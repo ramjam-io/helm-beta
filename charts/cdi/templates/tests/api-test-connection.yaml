@@ -1,0 +1,20 @@
+{{- if .Values.api.ingress.enabled -}}
+{{- $fullName := include "cdi.fullname" . -}}
+{{- $svcPort := (split ":" .Values.api.configuration.listen)._1 | default "8080" -}}
+{{- $svcType := "ClusterIP" -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "cdi.fullname" . }}-test-connection"
+  labels:
+    {{- include "cdi.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "cdi.fullname" . }}:{{ $svcPort }}']
+  restartPolicy: Never
+{{- end -}}

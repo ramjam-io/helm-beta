@@ -1,0 +1,97 @@
+{{- $fullName := include "cdi.fullname" . -}}
+{{- $apiSecretName := printf "%s-%s" $fullName "api-config" -}}
+{{- $apiContainerName := printf "%s-%s" .Chart.Name "api" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cdi.fullname" . }}
+  labels:
+    {{- include "cdi.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cdi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cdi.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.api.enabled }}
+        - name: api-config
+          secret:
+            secretName: {{ $apiSecretName }}
+            items:
+              - key: api.yaml
+                path: api.yaml
+              - key: root_ca_cert.pem
+                path: root_ca_cert.pem
+              - key: root_ca_key.pem
+                path: root_ca_key.pem
+      {{- end }}
+      serviceAccountName: {{ include "cdi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      {{- if .Values.api.enabled }}
+        - name: {{ $apiContainerName }}
+          command: {{ toYaml .Values.api.command | nindent 12 }}
+          args: {{ toYaml .Values.api.args | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /opt/ramjam.io/etc/api.yaml
+              name: api-config
+              readOnly: true
+              subPath: api.yaml
+            - mountPath: /opt/ramjam.io/etc/root_ca_cert.pem
+              name: api-config
+              readOnly: true
+              subPath: root_ca_cert.pem
+            - mouthPath: /opt/ramjam.io/etc/root_ca_key.pem
+              name: api-config
+              readOnly: true
+              subPath: root_ca_key.pem
+          ports:
+          {{- if .Values.api.enabled }}
+          {{- $apiContainerPort := (split ":" .Values.api.configuration.listen)._1 | default "8080" }}
+            - name: http
+              containerPort: {{ $apiContainerPort }}
+              protocol: TCP
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

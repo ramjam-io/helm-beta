@@ -1,0 +1,20 @@
+{{- if .Values.api.ingress.enabled -}}
+{{- $fullName := include "cdi.fullname" . -}}
+{{- $svcPort := (split ":" .Values.api.configuration.listen)._1 | default "8080" -}}
+{{- $svcType := "ClusterIP" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "cdi.labels" . | nindent 4 }}
+spec:
+  type: {{ $svcType }}
+  ports:
+    - port: {{ $svcPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cdi.selectorLabels" . | nindent 4 }}
+{{- end -}}
