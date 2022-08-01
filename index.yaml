@@ -82,4 +82,15 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/auth-api-0.0.2/auth-api-0.0.2.tgz
     version: 0.0.2
+  cdi:
+  - apiVersion: v2
+    appVersion: 0.3.21
+    created: "2022-08-01T10:53:40.925126094Z"
+    description: CoAP Data Ingestor
+    digest: cd522cfb394f5d535b32f9c3493336b12155ccda83d9625610525882c103073f
+    name: cdi
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/cdi-0.1.0/cdi-0.1.0.tgz
+    version: 0.1.0
 generated: "2022-06-29T22:27:43.884883+02:00"
