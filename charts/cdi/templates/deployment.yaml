@@ -74,11 +74,11 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: /bean
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /bean
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
