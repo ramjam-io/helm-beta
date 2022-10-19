@@ -113,4 +113,15 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/cdi-0.1.0/cdi-0.1.0.tgz
     version: 0.1.0
+  notify-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-10-19T13:52:40.27472284Z"
+    description: Notify SMS API Helm Chart.
+    digest: 3a60cdc9182fd7394b5b0942ab3e1180c87ef01cab230f8f745f8b1035e9df73
+    name: notify-api
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/notify-api-0.1.0/notify-api-0.1.0.tgz
+    version: 0.1.0
 generated: "2022-06-29T22:27:43.884883+02:00"
