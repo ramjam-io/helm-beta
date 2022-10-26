@@ -1,0 +1,107 @@
+# Default values for ping-atracs.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: /ramjam/go-atracs
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.0.4"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 5000
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "80"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: TCP
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: 3
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: 3
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: 10
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: 10
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+configuration:
+  # The following values are used to configure the atracs service
+  udpService:
+    # The port on which the atracs service will listen for UDP packets
+    server:
+      port: 5000
+      host: 0.0.0.0
+    # The publisher details for the atracs service
+    publisher:
+      # The host to publish to
+      host:
+      # The port to publish to
+      port: 5672
+      # The exchange to publish to
+      exchange:
+      # The routing key to publish to
+      topic:
+      # The vhost to publish to
+      vhost:
+      # The username to publish to
+      username:
+      # The password to publish to
+      password:
+
+  # The following are the default values for the configuration of logging
+  logging:
+    level: debug
