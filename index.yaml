@@ -124,4 +124,15 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/notify-api-0.1.0/notify-api-0.1.0.tgz
     version: 0.1.0
+  ping-atracs:
+  - apiVersion: v2
+    appVersion: 0.0.4
+    created: "2022-10-26T13:56:41.322123588Z"
+    description: Ping Atracs Ingestor
+    digest: 57d9ec47776b2b301bc78b24c7dcac6121d57e3d1200685edde3be528ba8e88e
+    name: ping-atracs
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/ping-atracs-0.1.0/ping-atracs-0.1.0.tgz
+    version: 0.1.0
 generated: "2022-06-29T22:27:43.884883+02:00"
