@@ -5,11 +5,11 @@ metadata:
   labels:
     {{- include "ping-atracs.labels" . | nindent 4 }}
   annotations:
-    {{- .Values.service.annotations | toYaml  | nindent 4 }}
+    {{ .Values.service.annotations | toYaml | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 5000
       protocol: UDP
       name: atracs
       # Tartets
