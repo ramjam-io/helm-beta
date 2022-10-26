@@ -127,6 +127,16 @@ entries:
   ping-atracs:
   - apiVersion: v2
     appVersion: 0.0.4
+    created: "2022-10-26T14:43:31.036472969Z"
+    description: Ping Atracs Ingestor
+    digest: bfd68032f980263834cee8569822aeaa8dd03e61a13a5662910965a57ea79197
+    name: ping-atracs
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/ping-atracs-0.1.4/ping-atracs-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: 0.0.4
     created: "2022-10-26T14:32:55.272814284Z"
     description: Ping Atracs Ingestor
     digest: 5da9063004a01479dd4f7a9e8cd43e9d33d038439e6be7f493baa007b1ad259a
@@ -165,4 +175,4 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/ping-atracs-0.1.0/ping-atracs-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-26T14:32:55.272854185Z"
+generated: "2022-10-26T14:43:31.036513069Z"
