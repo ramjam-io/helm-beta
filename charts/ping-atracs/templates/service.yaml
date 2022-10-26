@@ -14,5 +14,6 @@ spec:
     - port: {{ .Values.service.port }}
       protocol: UDP
       name: atracs
+      targetPort: 5000
   selector:
     {{- include "ping-atracs.selectorLabels" . | nindent 4 }}
