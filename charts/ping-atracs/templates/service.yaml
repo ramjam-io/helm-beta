@@ -13,6 +13,6 @@ spec:
       protocol: UDP
       name: atracs
       # Tartets
-      targetPort: 5000
+      # targetPort: 5000
   selector:
     {{- include "ping-atracs.selectorLabels" . | nindent 4 }}
