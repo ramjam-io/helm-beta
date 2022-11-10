@@ -1,5 +1,5 @@
 {{- $fullName := include "ping-atracs.fullname" . -}}
-{{-  $secretName := printf "%s-%s"  "config" -}}
+{{-  $secretName := printf "%s-%s" $fullName "config" -}}
 {{-  $serverName := printf "%s-%s" .Chart.Name "server" -}}
 {{-  $workerName := printf "%s-%s" .Chart.Name "worker" -}}
 apiVersion: apps/v1
