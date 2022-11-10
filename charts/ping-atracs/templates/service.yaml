@@ -7,7 +7,12 @@ metadata:
   annotations:
     {{ .Values.service.annotations | toYaml | nindent 4 }}
 spec:
+  # If the service tupe is ClusterIP, the service is only accessible within the cluster
+  {{- if eq .Values.service.type "ClusterIP" }}
+  type: ClusterIP
+  {{- else }}
   type: {{ .Values.service.type }}
+  {{- end }}
   ports:
     - port: 5000
       protocol: UDP

@@ -1,5 +1,7 @@
 {{- $fullName := include "ping-atracs.fullname" . -}}
-{{-  $secretName := printf "%s-%s" $fullName "config" -}}
+{{-  $secretName := printf "%s-%s"  "config" -}}
+{{-  $serverName := printf "%s-%s" .Chart.Name "server" -}}
+{{-  $workerName := printf "%s-%s" .Chart.Name "worker" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,17 +40,63 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        {{- if .Values.worker.enabled }}
+        - name: {{ $workerName }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/go-atracs"]
+          args: ["process", "message-queue", "--config", "/opt/ping-asset/etc/atracs/config.yaml", "--log-level", "debug"]
           volumeMounts:
             - name: config
               mountPath: /opt/ping-asset/etc/atracs/config.yaml
               readOnly: true
               subPath: config.yaml
           ports:
+            - name: health
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: health
+            failureThreshold: 5
+            initialDelaySeconds: 10
+            periodSeconds: 29
+            successThreshold: 1
+            timeoutSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: health
+            failureThreshold: 5
+            initialDelaySeconds: 10
+            periodSeconds: 29
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+        # We only include the server if server.enabled is true
+        {{- if .Values.server.enabled }}
+        - name: {{ $serverName }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/go-atracs"]
+          args: ["serve", "--config", "/opt/ping-asset/etc/atracs/config.yaml", "--log-level", "debug"]
+          volumeMounts:
+            - name: config
+              mountPath: /opt/ping-asset/etc/atracs/config.yaml
+              readOnly: true
+              subPath: config.yaml
+          ports:
+            - name: health
+              containerPort: 8080
+              protocol: TCP
             - name: http
               containerPort: 80
               protocol: TCP
@@ -59,12 +107,28 @@ spec:
             httpGet:
               path: /health
               port: http
+            failureThreshold: 5
+            initialDelaySeconds: 10
+            periodSeconds: 29
+            successThreshold: 1
+            timeoutSeconds: 5
+
           readinessProbe:
             httpGet:
               path: /health
               port: http
+            failureThreshold: 5
+            initialDelaySeconds: 10
+            periodSeconds: 29
+            successThreshold: 1
+            timeoutSeconds: 5
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        ## End Server
+        {{- end }}
+        
+        
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

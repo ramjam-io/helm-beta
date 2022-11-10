@@ -41,16 +41,16 @@ securityContext:
 service:
   type: LoadBalancer
   port: 5000
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "80"
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: TCP
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: 3
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: 3
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: 10
-    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: 10
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  #   service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "80"
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: TCP
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: 3
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: 3
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: 10
+  #   service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: 10
+  #   service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 
 resources:
   {}
@@ -77,6 +77,11 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+server:
+  enabled: true
+worker:
+  enabled: true
 
 configuration:
   # The following values are used to configure the atracs service
