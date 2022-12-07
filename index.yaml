@@ -124,6 +124,17 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/notify-api-0.1.0/notify-api-0.1.0.tgz
     version: 0.1.0
+  notify-legacy:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-12-07T21:49:55.077853985Z"
+    description: A Helm chart for Kubernetes
+    digest: 029e80ce4b495a7f53d9547a8db8966140e1e46e3063cb0f4c8988d8bd2151e0
+    name: notify-legacy
+    type: application
+    urls:
+    - https://github.com/ramjam-io/helm-beta/releases/download/notify-legacy-0.0.1/notify-legacy-0.0.1.tgz
+    version: 0.0.1
   ping-atracs:
   - apiVersion: v2
     appVersion: 0.2.0
@@ -245,4 +256,4 @@ entries:
     urls:
     - https://github.com/ramjam-io/helm-beta/releases/download/ping-atracs-0.1.0/ping-atracs-0.1.0.tgz
     version: 0.1.0
-generated: "2022-11-12T06:56:40.065972851Z"
+generated: "2022-12-07T21:49:55.077919286Z"
